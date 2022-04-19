@@ -1,7 +1,5 @@
 #Given chess board positions and the tactic labels, train neural network to be able to identify tactic
 
-#Given chess board positions and the tactic labels, train neural network to be able to identify tactic
-
 #TODO: Need to be able to convert PGN to FEN. Don't need to be able to go backwards.
 
 import bz2
@@ -38,5 +36,20 @@ for game in all_games_data:
 
 
 
+def boardfen_to_matrix(curboard):
+
+    chmap = { ".":0, "p": 1, "r": 2, "n": 3, "b":4, "q":5, "k":6,
+                 "P":7, "R":8, "N":9, "B":10, "Q":11, "K":12 }
+    
+    board_rows_letters = curboard.__str__().split("\n")
+    board_rows_numeric = []
+
+    for row in board_rows_letters:
+        row = row.split(" ")
+        numeric_row = [chmap[row[0]], chmap[row[1]], chmap[row[2]], chmap[row[3]],
+                       chmap[row[4]], chmap[row[5]], chmap[row[6]], chmap[row[7]]]
+        
+        board_rows_numeric.append(numeric_row)
+    return board_rows_numeric
 #based on the lichess puzzles database, the FEN is the game state before opponent moves
 #We also have the opponents move. After opponent move, there's a tactical opportunity available.
