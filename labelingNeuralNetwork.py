@@ -4,7 +4,7 @@
 
 import bz2
 import chess
-
+import chess.engine
 
 
 def boardfen_to_matrix(curboard):
@@ -24,12 +24,27 @@ def boardfen_to_matrix(curboard):
     return board_rows_numeric
 
 
+#to do in morning: finish function to check if move was blunder. train neural network to recognize categories. 
 
-def was_move_blunder(prevboard, curboard):
+def move_was_mistake(prevboard, curboard,
+                     engine_loc = "C:\\Users\\chine\\Downloads\\stockfish_15_win_x64_popcnt\\stockfish_15_win_x64_popcnt\\stockfish_15_x64_popcnt.exe",
+                     mistake_threshold = 2):
     #if there's a significant swing in the eval function between the two states, then move was a mistake
     #NOTE: can get fancier and separate out small mistake from larger mistakes. small mistakes
     #return score
-    return None
+
+    engine = chess.engine.SimpleEngine.popen_uci(engine_loc)
+    
+    
+    cur_move_info = engine.analyse(curboard, chess.engine.Limit(time=0.1))["score"] #return PovScore object
+    cur_move_val = (cur_move_info.white().score())/100 #get score as number from white point of view. score is centipawn loss
+    prev_move_info = engine.analyse(curboard, chess.engine.Limit(time=0.01))["score"]
+    prev_move_val = (prev_move_info.white().score())/100 #get score as number from white point of view as well. score is centipawn loss
+
+    
+    if abs(cur_move_val - prev_move_val) >= mistake_threshold:
+        return True
+    return False
 
 
     
@@ -80,13 +95,12 @@ def load_training_testing_pairs(puzzlesfilename, output_categories_filename, lim
 
 
 
-
+engine_exe_loc = "C:\\Users\\chine\\Downloads\\stockfish_15_win_x64_popcnt\\stockfish_15_win_x64_popcnt\\stockfish_15_x64_popcnt.exe"
 puzzles_datafile = "lichess_db_puzzle.csv.bz2"
 output_labelsfile = "puzzleThemesShort.txt"
 
-XandY = load_training_testing_pairs(puzzles_datafile, output_labelsfile, limit = 10000)
+#get formatted data. X is made up of successive 8*8*12 matrices. Y is a vector of output labels, with one per X matrix
+XandY = load_training_testing_pairs(puzzles_datafile, output_labelsfile, 10000)
 
 
-#based on the lichess puzzles database, the FEN is the game state before opponent moves
-#We also have the opponents move. After opponent move, there's a tactical opportunity available.
 #****To do after dinner - Figure out set of possible output labels and convert them to numbers.
