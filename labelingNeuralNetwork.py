@@ -29,6 +29,7 @@ def was_move_blunder(prevboard, curboard):
     #if there's a significant swing in the eval function between the two states, then move was a mistake
     #NOTE: can get fancier and separate out small mistake from larger mistakes. small mistakes
     #return score
+    return None
 
 puzzles_compressed = "lichess_db_puzzle.csv.bz2"
 output_categories_filename = "puzzleThemesShort.txt"
