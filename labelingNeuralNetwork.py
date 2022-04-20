@@ -1,6 +1,6 @@
 #Given chess board positions and the tactic labels, train neural network to be able to identify tactic
 
-#TODO: Need to be able to convert PGN to FEN. Don't need to be able to go backwards.
+#To convert PGN to FEN is trivial: board.fen() . Note: Can't convert FEN to PGN.
 
 import bz2
 import chess
