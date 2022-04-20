@@ -29,9 +29,12 @@ def boardfen_to_matrix(curboard):
 def move_was_mistake(prevboard, curboard,
                      engine_loc = "C:\\Users\\chine\\Downloads\\stockfish_15_win_x64_popcnt\\stockfish_15_win_x64_popcnt\\stockfish_15_x64_popcnt.exe",
                      mistake_threshold = 2):
-    #if there's a significant swing in the eval function between the two states, then move was a mistake
-    #NOTE: can get fancier and separate out small mistake from larger mistakes. small mistakes
-    #return score
+    """
+      Detect if there was a significant change in the evaluation of the position
+      Return True if evaluation changed significantly, else return False
+      
+    """
+    
 
     engine = chess.engine.SimpleEngine.popen_uci(engine_loc)
     
@@ -42,7 +45,7 @@ def move_was_mistake(prevboard, curboard,
     prev_move_val = (prev_move_info.white().score())/100 #get score as number from white point of view as well. score is centipawn loss
 
     
-    if abs(cur_move_val - prev_move_val) >= mistake_threshold:
+    if abs(cur_move_val - prev_move_val) >= mistake_threshold: 
         return True
     return False
 
