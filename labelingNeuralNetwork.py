@@ -32,6 +32,7 @@ def was_move_blunder(prevboard, curboard):
 
 puzzles_compressed = "lichess_db_puzzle.csv.bz2"
 
+
 all_games_data = []
 training_pairs = []
 
