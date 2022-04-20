@@ -31,56 +31,60 @@ def was_move_blunder(prevboard, curboard):
     #return score
     return None
 
-puzzles_compressed = "lichess_db_puzzle.csv.bz2"
-output_categories_filename = "puzzleThemesShort.txt"
-
-
-all_games_data = []
-training_pairs = []
-output_categories = [] #list of (constrained) output labels we'll allow
-
-
-with open(output_categories_filename) as output_cats_file:
-    for category in output_cats_file:
-        output_categories.append(category.strip())
-    
-    
-
-with bz2.open(puzzles_compressed, "rt") as puzzles_file:
-    i = 0
-  
-    for game in puzzles_file: #arbitrary threshold to reduce processing time
-        if i >= 10000:
-            break
-        else:
-            i += 1
-        all_games_data.append(game)
-
-#process the raw input into form for training. 
-for game in all_games_data:
-    game_vars = game.split(",") 
-    FEN_before_opponent = game_vars[1] #game state before opponent mistake
-    opponent_move_str = game_vars[2].split(" ")[0] #first move in move combo is opponent mistake    
 
     
-    board_state = chess.Board(FEN_before_opponent)
-    opponent_move = chess.Move.from_uci(opponent_move_str)
-    board_state.push(opponent_move)
+def load_training_testing_pairs(puzzlesfilename, output_categories_filename, limit = 10000):
 
-    impending_tactic = "unknown"
-    
-    tactics_info = game_vars[7].split(" ")
-    for tactic_str in tactics_info:
-        if tactic_str in output_categories:
-            impending_tactic = tactic_str
-            break
+    all_games_data = []
+    training_test_pairs = []
+    output_categories = [] #list of (constrained) output labels we'll allow
+
+    with bz2.open(puzzlesfilename, "rt") as puzzles_file:
+        i = 0
+      
+        for game in puzzles_file: #arbitrary threshold to reduce processing time
+            if i >= limit:
+                break
+            else:
+                i += 1
+            all_games_data.append(game)
+
+    with open(output_categories_filename) as output_cats_file:
+        for category in output_cats_file:
+            output_categories.append(category.strip())
+            
+    #process the raw input into form for training. Technically, better to call this "position" instead of game - we're looking at single positions, not whole games.
+    for game in all_games_data:
+        game_vars = game.split(",") 
+        FEN_before_opponent = game_vars[1] #game state before opponent mistake
+        opponent_move_str = game_vars[2].split(" ")[0] #first move in move combo is opponent mistake    
+
+        
+        board_state = chess.Board(FEN_before_opponent)
+        opponent_move = chess.Move.from_uci(opponent_move_str)
+        board_state.push(opponent_move)
+
+        impending_tactic = "unknown"
+        
+        tactics_info = game_vars[7].split(" ")
+        for tactic_str in tactics_info:
+            if tactic_str in output_categories:
+                impending_tactic = tactic_str
+                break
     
             
-     
-    training_pairs.append((boardfen_to_matrix(board_state), impending_tactic))
+        training_test_pairs.append((boardfen_to_matrix(board_state), impending_tactic))
+        
+    return training_test_pairs
+        
 
 
 
+
+puzzles_datafile = "lichess_db_puzzle.csv.bz2"
+output_labelsfile = "puzzleThemesShort.txt"
+
+XandY = load_training_testing_pairs(puzzles_datafile, output_labelsfile, limit = 10000)
 
 
 #based on the lichess puzzles database, the FEN is the game state before opponent moves
