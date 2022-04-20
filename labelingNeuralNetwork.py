@@ -31,10 +31,19 @@ def was_move_blunder(prevboard, curboard):
     #return score
 
 puzzles_compressed = "lichess_db_puzzle.csv.bz2"
+output_categories_filename = "puzzleThemesShort.txt"
 
 
 all_games_data = []
 training_pairs = []
+output_categories = [] #list of (constrained) output labels we'll allow
+
+
+with open(output_categories_filename) as output_cats_file:
+    for category in output_cats_file:
+        output_categories.append(category.strip())
+    
+    
 
 with bz2.open(puzzles_compressed, "rt") as puzzles_file:
     i = 0
@@ -56,8 +65,17 @@ for game in all_games_data:
     board_state = chess.Board(FEN_before_opponent)
     opponent_move = chess.Move.from_uci(opponent_move_str)
     board_state.push(opponent_move)
+
+    impending_tactic = "unknown"
     
-    impending_tactic = game_vars[7] #string containing info about tactic
+    tactics_info = game_vars[7].split(" ")
+    for tactic_str in tactics_info:
+        if tactic_str in output_categories:
+            impending_tactic = tactic_str
+            break
+    
+            
+     
     training_pairs.append((boardfen_to_matrix(board_state), impending_tactic))
 
 
