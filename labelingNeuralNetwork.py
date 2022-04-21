@@ -3,8 +3,10 @@
 
 
 
-
 #Note: To convert PGN to FEN is trivial: board.fen() . Note: Can't convert FEN to PGN.
+
+
+#TODO: 1) Ensure classes are balanced for training purposes. Currently not checking.
 
 import bz2
 import chess
@@ -58,7 +60,8 @@ def move_was_mistake(prevboard, curboard,
 def load_training_testing_pairs(puzzlesfilename, output_categories_filename, limit = 10000):
 
     all_games_data = []
-    training_test_pairs = []
+    X = []
+    Y = []
     output_categories = [] #list of (constrained) output labels we'll allow
 
     with bz2.open(puzzlesfilename, "rt") as puzzles_file:
@@ -93,18 +96,21 @@ def load_training_testing_pairs(puzzlesfilename, output_categories_filename, lim
             if tactic_str in output_categories:
                 impending_tactic = tactic_str
                 break
-    
-     
-        training_test_pairs.append((boardfen_to_vector(board_state), impending_tactic))
+          
+
+        #store the input vectors and output labels in separate but corresponding arrays
+        X.append(boardfen_to_vector(board_state))
+        Y.append(impending_tactic)
         
-    return training_test_pairs
+    return X, Y
         
 
 puzzles_datafile = "lichess_db_puzzle.csv.bz2"
 output_labelsfile = "puzzleThemesShort.txt"
 
 #get formatted data. X is made up of successive 64*1 vectors. Y is a vector of output labels, with one per X vector
-XandY = load_training_testing_pairs(puzzles_datafile, output_labelsfile, 50000)
+Xfull, Yfull = load_training_testing_pairs(puzzles_datafile, output_labelsfile, 50000)
+
 
 
 
