@@ -1,13 +1,17 @@
 #Given chess board positions and the tactic labels, train neural network to be able to identify tactic
+#Given two positions, check if the move was a tactical mistake
 
-#To convert PGN to FEN is trivial: board.fen() . Note: Can't convert FEN to PGN.
+
+
+
+#Note: To convert PGN to FEN is trivial: board.fen() . Note: Can't convert FEN to PGN.
 
 import bz2
 import chess
 import chess.engine
 
 
-def boardfen_to_matrix(curboard):
+def boardfen_to_vector(curboard):
 
     chmap = { ".":0, "p": 1, "r": 2, "n": 3, "b":4, "q":5, "k":6,
                  "P":7, "R":8, "N":9, "B":10, "Q":11, "K":12 }
@@ -21,10 +25,10 @@ def boardfen_to_matrix(curboard):
                        chmap[row[4]], chmap[row[5]], chmap[row[6]], chmap[row[7]]]
         
         board_rows_numeric.append(numeric_row)
-    return board_rows_numeric
+        
+    return board_rows_numeric.flatten() #covert the 8*8 matrix into a 64*1 vector
 
 
-#to do in morning: finish function to check if move was blunder. train neural network to recognize categories. 
 
 def move_was_mistake(prevboard, curboard,
                      engine_loc = "C:\\Users\\chine\\Downloads\\stockfish_15_win_x64_popcnt\\stockfish_15_win_x64_popcnt\\stockfish_15_x64_popcnt.exe",
@@ -90,20 +94,19 @@ def load_training_testing_pairs(puzzlesfilename, output_categories_filename, lim
                 impending_tactic = tactic_str
                 break
     
-            
-        training_test_pairs.append((boardfen_to_matrix(board_state), impending_tactic))
+     
+        training_test_pairs.append((boardfen_to_vector(board_state), impending_tactic))
         
     return training_test_pairs
         
 
-
-
-engine_exe_loc = "C:\\Users\\chine\\Downloads\\stockfish_15_win_x64_popcnt\\stockfish_15_win_x64_popcnt\\stockfish_15_x64_popcnt.exe"
 puzzles_datafile = "lichess_db_puzzle.csv.bz2"
 output_labelsfile = "puzzleThemesShort.txt"
 
-#get formatted data. X is made up of successive 8*8*12 matrices. Y is a vector of output labels, with one per X matrix
+#get formatted data. X is made up of successive 64*1 vectors. Y is a vector of output labels, with one per X vector
 XandY = load_training_testing_pairs(puzzles_datafile, output_labelsfile, 10000)
+
+
 
 
 #****To do after dinner - Figure out set of possible output labels and convert them to numbers.
