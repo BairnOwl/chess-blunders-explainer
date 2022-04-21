@@ -13,6 +13,12 @@ import chess
 import chess.engine
 import numpy as np
 
+
+import matplotlib.pyplot as plt
+from keras.layers import Dense, Flatten
+from keras.models import Sequential
+
+
 def boardfen_to_vector(curboard):
 
     chmap = { ".":0, "p": 1, "r": 2, "n": 3, "b":4, "q":5, "k":6,
@@ -29,6 +35,31 @@ def boardfen_to_vector(curboard):
         board_rows_numeric.append(numeric_row)
         
     return np.array(board_rows_numeric).flatten() #covert the 8*8 matrix into a 64*1 vector
+
+
+def convert_labels_to_one_hot_vectors(output_categories, labels_to_convert):
+    """
+       Assuming the output categories are unique (no repitition). 
+    """
+    num_unique_labels = len(output_categories)
+    unique_label_mapping = {}
+     
+    #create mappings for unique categories to one-hot vectors
+    for i in range(num_unique_labels):
+        encoding = np.zeros(num_unique_labels)
+        encoding[i] = 1 #set the location of the current category to one (i.e. one hot encoding)
+        
+        unique_label_mapping[output_categories[i]] = encoding        
+
+   
+    
+    converted_vectors = []
+
+    #apply mapping to convert all Y data into one-hot vectors
+    for curlabel in labels_to_convert:
+        converted_vectors.append(unique_label_mapping[curlabel])
+        
+    return np.array(converted_vectors)
 
 
 
@@ -62,7 +93,7 @@ def load_training_testing_pairs(puzzlesfilename, output_categories_filename, lim
     all_games_data = []
     X = []
     Y = []
-    output_categories = [] #list of (constrained) output labels we'll allow
+    output_categories = ["unknown"] #list of (constrained) output labels we'll allow
 
     with bz2.open(puzzlesfilename, "rt") as puzzles_file:
         i = 0
@@ -101,18 +132,49 @@ def load_training_testing_pairs(puzzlesfilename, output_categories_filename, lim
         #store the input vectors and output labels in separate but corresponding arrays
         X.append(boardfen_to_vector(board_state))
         Y.append(impending_tactic)
-        
-    return X, Y
+
+    #set(output_categories) is the num of unique labels. +1 for unknown labels.
+    return X, Y, output_categories 
         
 
 puzzles_datafile = "lichess_db_puzzle.csv.bz2"
 output_labelsfile = "puzzleThemesShort.txt"
 
 #get formatted data. X is made up of successive 64*1 vectors. Y is a vector of output labels, with one per X vector
-Xfull, Yfull = load_training_testing_pairs(puzzles_datafile, output_labelsfile, 50000)
+Xfull, Yfull, alluniqueYlabels = load_training_testing_pairs(puzzles_datafile, output_labelsfile, 50)
+
+#split data 50-50 for training and testing
+midpoint = int(len(Xfull)/2)
+Xtrain = Xfull[:midpoint]
+Xtest = Xfull[midpoint:]
+Ytrain = Yfull[:midpoint]
+Ytest = Yfull[midpoint:]
+
+#convert Y categories into one-hot encodings for ML model
+"""
+Ytrain_hot = []
+for i in range(len(Ytrain)):
+    Ytrain_hot.append(to_categorical(Ytrain[i], num_classes = num_categories))
+Ytrain = np.array(Ytrain_hot)
+"""
+Ytrain_hot = convert_labels_to_one_hot_vectors(alluniqueYlabels, Ytrain)
+Ytrain = Ytrain_hot
+
+Ytest_hot = convert_labels_to_one_hot_vectors(alluniqueYlabels, Ytest)
+Ytest = Ytest_hot
 
 
 
+
+"""
+Ytest_hot = []
+for i in range(len(Ytest)):
+    Ytest_hot.append(to_categorical(Ytest[i], num_classes = num_categories))
+Ytest = np.array(Ytest_hot)
+"""
+    
+
+#Convert 
 
 
 #****To do after dinner - Figure out set of possible output labels and convert them to numbers.
