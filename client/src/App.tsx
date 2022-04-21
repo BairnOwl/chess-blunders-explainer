@@ -1,10 +1,10 @@
 import { Chessboard } from 'react-chessboard';
-import GameRetrievalForm from './components/GameRetrievalForm';
+import GameManager from './components/GameManager';
 
 function App() {
   // return <Chessboard position={"start"} />;
   return (
-    <GameRetrievalForm />
+    <GameManager />
   );
 }
 export default App;
