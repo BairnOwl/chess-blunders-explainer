@@ -10,6 +10,7 @@
     "@types/node": "^16.11.27",
     "@types/react": "^18.0.5",
     "@types/react-dom": "^18.0.1",
+    "can-ndjson-stream": "^1.0.2",
     "chess.js": "^0.13.1",
     "react": "^18.0.0",
     "react-chessboard": "^1.2.2",
