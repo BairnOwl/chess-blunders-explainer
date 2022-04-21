@@ -9,7 +9,7 @@
 import bz2
 import chess
 import chess.engine
-
+import numpy as np
 
 def boardfen_to_vector(curboard):
 
@@ -26,7 +26,7 @@ def boardfen_to_vector(curboard):
         
         board_rows_numeric.append(numeric_row)
         
-    return board_rows_numeric.flatten() #covert the 8*8 matrix into a 64*1 vector
+    return np.array(board_rows_numeric).flatten() #covert the 8*8 matrix into a 64*1 vector
 
 
 
@@ -104,7 +104,7 @@ puzzles_datafile = "lichess_db_puzzle.csv.bz2"
 output_labelsfile = "puzzleThemesShort.txt"
 
 #get formatted data. X is made up of successive 64*1 vectors. Y is a vector of output labels, with one per X vector
-XandY = load_training_testing_pairs(puzzles_datafile, output_labelsfile, 10000)
+XandY = load_training_testing_pairs(puzzles_datafile, output_labelsfile, 50000)
 
 
 
