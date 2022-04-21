@@ -93,7 +93,7 @@ def load_training_testing_pairs(puzzlesfilename, output_categories_filename, lim
     all_games_data = []
     X = []
     Y = []
-    output_categories = ["unknown"] #list of (constrained) output labels we'll allow
+    output_categories = ["unknown"] #list of constrained AND unique output labels we'll allow
 
     with bz2.open(puzzlesfilename, "rt") as puzzles_file:
         i = 0
@@ -141,22 +141,17 @@ puzzles_datafile = "lichess_db_puzzle.csv.bz2"
 output_labelsfile = "puzzleThemesShort.txt"
 
 #get formatted data. X is made up of successive 64*1 vectors. Y is a vector of output labels, with one per X vector
-Xfull, Yfull, alluniqueYlabels = load_training_testing_pairs(puzzles_datafile, output_labelsfile, 50)
+Xfull, Yfull, alluniqueYlabels = load_training_testing_pairs(puzzles_datafile, output_labelsfile, 5000)
 
 #split data 50-50 for training and testing
 midpoint = int(len(Xfull)/2)
-Xtrain = Xfull[:midpoint]
-Xtest = Xfull[midpoint:]
-Ytrain = Yfull[:midpoint]
-Ytest = Yfull[midpoint:]
+Xtrain = np.array(Xfull[:midpoint])
+Xtest = np.array(Xfull[midpoint:])
+Ytrain = np.array(Yfull[:midpoint])
+Ytest = np.array(Yfull[midpoint:])
 
 #convert Y categories into one-hot encodings for ML model
-"""
-Ytrain_hot = []
-for i in range(len(Ytrain)):
-    Ytrain_hot.append(to_categorical(Ytrain[i], num_classes = num_categories))
-Ytrain = np.array(Ytrain_hot)
-"""
+
 Ytrain_hot = convert_labels_to_one_hot_vectors(alluniqueYlabels, Ytrain)
 Ytrain = Ytrain_hot
 
@@ -165,14 +160,24 @@ Ytest = Ytest_hot
 
 
 
+#Neural Network
+model = Sequential()
+#model.add(Flatten(input_shape=(8,8)))
+model.add(Dense(5, activation = 'sigmoid'))
+model.add(Dense(len(alluniqueYlabels), activation = 'softmax'))
 
-"""
-Ytest_hot = []
-for i in range(len(Ytest)):
-    Ytest_hot.append(to_categorical(Ytest[i], num_classes = num_categories))
-Ytest = np.array(Ytest_hot)
-"""
-    
+model.build(Xtrain.shape)
+model.summary()
+
+#train network
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
+model.fit(Xtrain, Ytrain, epochs=10, validation_data=(Xtest, Ytest))
+
+
+#Try to perform predictions
+predictions = model.predict(Xtest) #prob. dist. showing likelihood of each class
+predictions = np.argmax(predictions, axis = 1) #index of class with highest likelihood
+
 
 #Convert 
 
