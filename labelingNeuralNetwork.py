@@ -3,7 +3,7 @@
 
 
 
-#Note: To convert PGN to FEN is trivial: board.fen() . Note: Can't convert FEN to PGN.
+#Note: To convert PGN to FEN, call: board.fen() . Note: Can't convert FEN to PGN.
 
 
 #TODO: 1) Ensure classes are balanced for training purposes. Currently not checking.
@@ -137,11 +137,17 @@ def load_training_testing_pairs(puzzlesfilename, output_categories_filename, lim
     return X, Y, output_categories 
         
 
+
+
+
+
+
 puzzles_datafile = "lichess_db_puzzle.csv.bz2"
 output_labelsfile = "puzzleThemesShort.txt"
+num_samples_to_load = 100000
 
 #get formatted data. X is made up of successive 64*1 vectors. Y is a vector of output labels, with one per X vector
-Xfull, Yfull, alluniqueYlabels = load_training_testing_pairs(puzzles_datafile, output_labelsfile, 5000)
+Xfull, Yfull, alluniqueYlabels = load_training_testing_pairs(puzzles_datafile, output_labelsfile, num_samples_to_load)
 
 #split data 50-50 for training and testing
 midpoint = int(len(Xfull)/2)
@@ -160,9 +166,9 @@ Ytest = Ytest_hot
 
 
 
-#Neural Network
+#Neural Network (see https://becominghuman.ai/simple-neural-network-on-mnist-handwritten-digit-dataset-61e47702ed25)
 model = Sequential()
-#model.add(Flatten(input_shape=(8,8)))
+
 model.add(Dense(5, activation = 'sigmoid'))
 model.add(Dense(len(alluniqueYlabels), activation = 'softmax'))
 
