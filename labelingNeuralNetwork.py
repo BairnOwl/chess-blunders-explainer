@@ -15,7 +15,7 @@ import numpy as np
 
 
 import matplotlib.pyplot as plt
-from keras.layers import Dense, Flatten
+from keras.layers import Dense
 from keras.models import Sequential
 
 
@@ -127,8 +127,10 @@ def load_training_testing_pairs(puzzlesfilename, output_categories_filename, lim
             if tactic_str in output_categories:
                 impending_tactic = tactic_str
                 break
-          
-
+        print(impending_tactic)
+        
+        if impending_tactic == "unknown": #(temp): skip unknown tactics for now. See if accuracy changes.
+            continue
         #store the input vectors and output labels in separate but corresponding arrays
         X.append(boardfen_to_vector(board_state))
         Y.append(impending_tactic)
@@ -144,7 +146,7 @@ def load_training_testing_pairs(puzzlesfilename, output_categories_filename, lim
 
 puzzles_datafile = "lichess_db_puzzle.csv.bz2"
 output_labelsfile = "puzzleThemesShort.txt"
-num_samples_to_load = 100000
+num_samples_to_load = 10000 #the number of puzzles to load for both training and testing. 
 
 #get formatted data. X is made up of successive 64*1 vectors. Y is a vector of output labels, with one per X vector
 Xfull, Yfull, alluniqueYlabels = load_training_testing_pairs(puzzles_datafile, output_labelsfile, num_samples_to_load)
@@ -165,6 +167,33 @@ Ytest_hot = convert_labels_to_one_hot_vectors(alluniqueYlabels, Ytest)
 Ytest = Ytest_hot
 
 
+#----------------------------------------------------------------------------------------------------------
+#Can try any neural network architecture at this point. Training data: Xtrain, Ytrain. Testing data: Ytrain, Ytest
+#Every X in Xtrain and Xtest is a vector with 64 numbers, each ranging from 0-12 (each number represents a piece or a blank square).
+#Every Y in Ytrain and Ytest is a one-hot vector that represents the true label for a tactic (e.g. pin, fork, skewer)
+
+
+
+#reference on ML: https://machinelearningmastery.com/tutorial-first-neural-network-python-keras/
+
+input_layer_size = 64 #size of the dimensions
+hidden_layer_size = input_layer_size * 2
+output_layer_size = len(alluniqueYlabels)
+
+model = Sequential()
+model.add(Dense(hidden_layer_size, input_dim = input_layer_size, activation = 'softmax'))
+model.add(Dense(output_layer_size, activation = 'softmax'))
+
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+model.fit(Xtrain, Ytrain, epochs=10, validation_data=(Xtest, Ytest))
+          
+predictions = model.predict(Xtest)
+predictions = np.argmax(predictions, axis = 1)
+
+
+
+
+"""
 
 #Neural Network (see https://becominghuman.ai/simple-neural-network-on-mnist-handwritten-digit-dataset-61e47702ed25)
 model = Sequential()
@@ -184,6 +213,7 @@ model.fit(Xtrain, Ytrain, epochs=10, validation_data=(Xtest, Ytest))
 predictions = model.predict(Xtest) #prob. dist. showing likelihood of each class
 predictions = np.argmax(predictions, axis = 1) #index of class with highest likelihood
 
+"""
 
 #Convert 
 
