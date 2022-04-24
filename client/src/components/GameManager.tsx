@@ -1,8 +1,12 @@
 import React from 'react';
 
 import ndjsonStream from 'can-ndjson-stream';
+import Button from '@mui/material/Button';
+import { FormControl, Input, InputLabel, FormHelperText } from '@mui/material';
 
 import GameInfoBox from './GameInfoBox';
+
+import './Base.css';
 
 interface Props {}
 
@@ -88,13 +92,18 @@ export default class GameManager extends React.Component<Props, States> {
 
     return (
       <div>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Username:
-            <input type="text" value={this.state.username} onChange={this.handleChange} />
-          </label>
-          <input type="submit" value="Import Games" />
-        </form>
+        <div className="header">
+          <img src="logo.png" className="logo" />
+          <h1>Chess Blunders Explained</h1>
+        </div>
+        <div className="form">
+          <FormControl onSubmit={this.handleSubmit}>
+            <InputLabel htmlFor="my-input">Username</InputLabel>
+            <Input id="my-input" aria-describedby="my-helper-text" value={this.state.username} onChange={this.handleChange} />
+            <FormHelperText id="my-helper-text">Enter your Lichess username.</FormHelperText>
+            <Button variant="contained" onClick={this.handleSubmit} className="form-button">Import Games</Button>
+          </FormControl>
+        </div>
 
         <ul>
           { gameList }

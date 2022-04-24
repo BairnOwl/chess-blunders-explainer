@@ -26,7 +26,7 @@ export default class GameInfoBox extends React.Component<GameProps, GameStates> 
 
     // console.log(convertToFEN(pgn));
     return (
-      <li key={id}>
+      <li key="{id}">
         {id}, {user}, {pgn}
 
       </li>

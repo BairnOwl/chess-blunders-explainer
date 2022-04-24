@@ -1,0 +1,19 @@
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  width: 15vw;
+}
+
+.form {
+  display: flex;
+  width: 100vw;
+  justify-content: center;
+}
+
+.form-button {
+  margin-top: 10px;
+}
