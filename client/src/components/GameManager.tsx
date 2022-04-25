@@ -23,7 +23,7 @@ interface UserInfo {
 interface PlayerInfo {
   rating: number,
   ratingDiff: number,
-  userInfo: UserInfo
+  user: UserInfo
 }
 
 interface Player {
@@ -31,11 +31,20 @@ interface Player {
   black: PlayerInfo
 }
 
+interface Opening {
+  eco: string,
+  name: string
+}
+
 export interface GameInfo {
   id: string,
+  createdAt: number,
   winner: string,
   players: Player,
-  pgn: string
+  pgn: string,
+  status: string,
+  opening: Opening,
+  speed: string
 }
 
 export default class GameManager extends React.Component<Props, States> {
@@ -59,7 +68,7 @@ export default class GameManager extends React.Component<Props, States> {
   handleSubmit(e) {
     e.preventDefault();
 
-    fetch('https://lichess.org/api/games/user/' + this.state.username + '?max=30&pgnInJson=true', {
+    fetch('https://lichess.org/api/games/user/' + this.state.username + '?max=30&pgnInJson=true&opening=true', {
       method: 'GET',
       headers: {'Accept': 'application/x-ndjson'}
     })
@@ -97,11 +106,15 @@ export default class GameManager extends React.Component<Props, States> {
     let gameList = this.state.gameList.map((d) =>
       <GameInfoBox
         id={d.id}
+        createdAt={d.createdAt}
         user={this.state.username}
         winner={d.winner}
-        white={d.players.white.rating}
-        black={d.players.black.rating}
+        status={d.status}
+        white={d.players.white.user.name}
+        black={d.players.black.user.name}
         pgn={d.pgn}
+        opening={d.opening}
+        speed={d.speed}
       />
     );
 

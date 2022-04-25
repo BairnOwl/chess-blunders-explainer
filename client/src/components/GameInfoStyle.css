@@ -1,0 +1,34 @@
+.game-box {
+  border: 1px solid black;
+  padding: 30px;
+  width: 500px;
+  margin: auto;
+}
+
+.time-control-img {
+  width: 50px;
+  float: left;
+}
+
+.versus-text {
+  display: block;
+  text-align: center;
+}
+
+.game-result {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.won {
+  color: green;
+}
+
+.lost {
+  color: red;
+}
+
+.draw {
+  color: grey;
+}
