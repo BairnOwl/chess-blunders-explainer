@@ -1,13 +1,11 @@
 import React from 'react';
 
-// import { convertToFEN } from 'pgn-to-fen';
-
 interface GameProps {
   id: string,
   user: string,
   winner: string,
-  white: string,
-  black: string,
+  white: number,
+  black: number,
   pgn: string
 
 };
@@ -24,12 +22,10 @@ export default class GameInfoBox extends React.Component<GameProps, GameStates> 
   render() {
     const { id, user, winner, white, black, pgn }  = this.props;
 
-    // console.log(convertToFEN(pgn));
     return (
-      <li key="{id}">
-        {id}, {user}, {pgn}
-
-      </li>
+      <div>
+        {user}, {winner}, {white}, {black}
+      </div>
     );
 
   }

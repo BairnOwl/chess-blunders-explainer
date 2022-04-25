@@ -2,7 +2,7 @@ import React from 'react';
 
 import ndjsonStream from 'can-ndjson-stream';
 import Button from '@mui/material/Button';
-import { FormControl, Input, InputLabel, FormHelperText } from '@mui/material';
+import { FormControl, TextField, InputLabel, FormHelperText } from '@mui/material';
 
 import GameInfoBox from './GameInfoBox';
 
@@ -15,11 +15,26 @@ interface States {
   gameList: GameInfo[]
 }
 
+interface UserInfo {
+  id: string,
+  name: string
+}
+
+interface PlayerInfo {
+  rating: number,
+  ratingDiff: number,
+  userInfo: UserInfo
+}
+
+interface Player {
+  white: PlayerInfo,
+  black: PlayerInfo
+}
+
 export interface GameInfo {
   id: string,
   winner: string,
-  white: string,
-  black: string,
+  players: Player,
   pgn: string
 }
 
@@ -84,8 +99,8 @@ export default class GameManager extends React.Component<Props, States> {
         id={d.id}
         user={this.state.username}
         winner={d.winner}
-        white={d.white}
-        black={d.black}
+        white={d.players.white.rating}
+        black={d.players.black.rating}
         pgn={d.pgn}
       />
     );
@@ -97,17 +112,17 @@ export default class GameManager extends React.Component<Props, States> {
           <h1>Chess Blunders Explained</h1>
         </div>
         <div className="form">
-          <FormControl onSubmit={this.handleSubmit}>
-            <InputLabel htmlFor="my-input">Username</InputLabel>
-            <Input id="my-input" aria-describedby="my-helper-text" value={this.state.username} onChange={this.handleChange} />
+          <FormControl>
+            <TextField id="my-input" aria-describedby="my-helper-text" variant="outlined" label="Username"
+              value={this.state.username} onChange={this.handleChange} margin="dense" />
             <FormHelperText id="my-helper-text">Enter your Lichess username.</FormHelperText>
-            <Button variant="contained" onClick={this.handleSubmit} className="form-button">Import Games</Button>
+            <Button variant="contained" onClick={this.handleSubmit} sx={{margin: 2}}>Import Games</Button>
           </FormControl>
         </div>
 
-        <ul>
+        <div>
           { gameList }
-        </ul>
+        </div>
       </div>
     );
   }
