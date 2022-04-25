@@ -71,6 +71,7 @@ export default class GameManager extends React.Component<Props, States> {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.showGameAnalysis = this.showGameAnalysis.bind(this);
+    this.hideGameAnalysis = this.hideGameAnalysis.bind(this);
   }
 
   handleChange(e) {
@@ -120,6 +121,12 @@ export default class GameManager extends React.Component<Props, States> {
     });
   }
 
+  hideGameAnalysis() {
+    this.setState({
+      showAnalysis: false
+    });
+  }
+
   render() {
 
     let gameList = this.state.gameList.map((d) =>
@@ -139,7 +146,11 @@ export default class GameManager extends React.Component<Props, States> {
       />
     );
 
-    let gameAnalysis = <GameAnalysis pgn={this.state.pgn} />;
+    let gameAnalysis =
+    <GameAnalysis
+      hideGameAnalysis={this.hideGameAnalysis}
+      pgn={this.state.pgn}
+    />;
 
     let display = <div></div>;
 

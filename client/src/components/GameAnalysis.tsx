@@ -1,8 +1,12 @@
 import React from 'react';
 
 import { Chessboard } from 'react-chessboard';
+import Button from '@mui/material/Button';
+
+import './GameAnalysisStyle.css';
 
 interface GameProps {
+  hideGameAnalysis: () => void
   pgn: string
 };
 
@@ -14,6 +18,11 @@ interface GameStates {
 export default class GameInfoBox extends React.Component<GameProps, GameStates> {
   constructor(props) {
     super(props);
+
+    this.setState({
+      pgn: '',
+      moves: ''
+    });
   }
 
   componentWillMount() {
@@ -28,9 +37,10 @@ export default class GameInfoBox extends React.Component<GameProps, GameStates> 
 
   render() {
     return (
-      <div>
-        <Chessboard position={"start"} />
-        {this.state.moves}
+      <div className="analysis-div">
+        <Button className="back-button" variant="outlined" sx={{margin: 2}} size="large" onClick={() => this.props.hideGameAnalysis()}>Back</Button>
+        <div className="board"><Chessboard position={"start"} /></div>
+        <div className="move-list">{this.state.moves}</div>
       </div>
     );
   }
