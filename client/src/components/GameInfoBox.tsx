@@ -7,6 +7,11 @@ interface Opening {
   name: string
 }
 
+interface Clock {
+  initial: number,
+  increment: number
+}
+
 interface GameProps {
   id: string,
   createdAt: number,
@@ -17,7 +22,8 @@ interface GameProps {
   black: string,
   pgn: string,
   opening: Opening,
-  speed: string
+  speed: string,
+  clock: Clock
 
 };
 
@@ -30,7 +36,7 @@ export default class GameInfoBox extends React.Component<GameProps, GameStates> 
   }
 
   render() {
-    const { id, createdAt, user, winner, status, white, black, pgn, opening, speed }  = this.props;
+    const { id, createdAt, user, winner, status, white, black, pgn, opening, speed, clock }  = this.props;
 
     let timeControlImg = <img className="time-control-img" src="bullet.png" />;
 
@@ -43,6 +49,11 @@ export default class GameInfoBox extends React.Component<GameProps, GameStates> 
     } else if (speed === "classical") {
       timeControlImg = <img className="time-control-img" src="classical.png" />
     }
+
+    const clockInitial = clock.initial / 60;
+    const clockIncrement = clock.increment;
+
+    const timeControlText = <span>{clockInitial} + {clockIncrement}</span>;
 
     let gameResultText: JSX.Element = <area />;
 
@@ -58,15 +69,17 @@ export default class GameInfoBox extends React.Component<GameProps, GameStates> 
 
     return (
       <div className="game-box">
-        <div>
+        <div className="time-control-div">
           {timeControlImg}
-        </div>
-        <div>
-          {date}
+          {timeControlText}
         </div>
         <div>
           <span className="versus-text">{white} vs. {black}</span>
           {gameResultText}
+        </div>
+        <div>
+          <span className="opening-text">Opening: {opening.eco} {opening.name}</span>
+          <span className="date-text">{date}</span>
         </div>
       </div>
     );

@@ -3,6 +3,15 @@
   padding: 30px;
   width: 500px;
   margin: auto;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.time-control-div {
+  display: block;
+  width: 50px;
+  float: left;
+  text-align: center;
 }
 
 .time-control-img {
@@ -10,9 +19,16 @@
   float: left;
 }
 
+.date-text {
+  font-size: 14px;
+}
+
 .versus-text {
   display: block;
   text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 20px;
 }
 
 .game-result {
@@ -31,4 +47,11 @@
 
 .draw {
   color: grey;
+}
+
+.opening-text {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-size: 13px;
 }

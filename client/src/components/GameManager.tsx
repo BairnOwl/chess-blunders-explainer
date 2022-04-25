@@ -36,6 +36,11 @@ interface Opening {
   name: string
 }
 
+interface Clock {
+  initial: number,
+  increment: number
+}
+
 export interface GameInfo {
   id: string,
   createdAt: number,
@@ -44,7 +49,8 @@ export interface GameInfo {
   pgn: string,
   status: string,
   opening: Opening,
-  speed: string
+  speed: string,
+  clock: Clock
 }
 
 export default class GameManager extends React.Component<Props, States> {
@@ -115,6 +121,7 @@ export default class GameManager extends React.Component<Props, States> {
         pgn={d.pgn}
         opening={d.opening}
         speed={d.speed}
+        clock={d.clock}
       />
     );
 
