@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import { FormControl, TextField, InputLabel, FormHelperText } from '@mui/material';
 
 import GameInfoBox from './GameInfoBox';
+import GameAnalysis from './GameAnalysis';
 
 import './Base.css';
 
@@ -12,7 +13,9 @@ interface Props {}
 
 interface States {
   username: string,
-  gameList: GameInfo[]
+  gameList: GameInfo[],
+  showAnalysis: boolean,
+  pgn: string
 }
 
 interface UserInfo {
@@ -60,11 +63,14 @@ export default class GameManager extends React.Component<Props, States> {
 
     this.state = {
       username: '',
-      gameList: []
+      gameList: [],
+      showAnalysis: false,
+      pgn: ''
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.showGameAnalysis = this.showGameAnalysis.bind(this);
   }
 
   handleChange(e) {
@@ -74,7 +80,7 @@ export default class GameManager extends React.Component<Props, States> {
   handleSubmit(e) {
     e.preventDefault();
 
-    fetch('https://lichess.org/api/games/user/' + this.state.username + '?max=30&pgnInJson=true&opening=true', {
+    fetch('https://lichess.org/api/games/user/' + this.state.username + '?max=50&pgnInJson=true&opening=true', {
       method: 'GET',
       headers: {'Accept': 'application/x-ndjson'}
     })
@@ -92,7 +98,7 @@ export default class GameManager extends React.Component<Props, States> {
 
               let gameList = this.state.gameList;
               gameList.push(result.value);
-              console.log(result.value);
+              // console.log(result.value);
               this.setState({
                 gameList: gameList
               });
@@ -107,10 +113,18 @@ export default class GameManager extends React.Component<Props, States> {
       )
   }
 
+  showGameAnalysis(pgn) {
+    this.setState({
+      showAnalysis: true,
+      pgn: pgn
+    });
+  }
+
   render() {
 
     let gameList = this.state.gameList.map((d) =>
       <GameInfoBox
+        showGameAnalysis={this.showGameAnalysis}
         id={d.id}
         createdAt={d.createdAt}
         user={this.state.username}
@@ -125,12 +139,17 @@ export default class GameManager extends React.Component<Props, States> {
       />
     );
 
-    return (
+    let gameAnalysis = <GameAnalysis pgn={this.state.pgn} />;
+
+    let display = <div></div>;
+
+    if (this.state.showAnalysis) {
+
+      display = gameAnalysis;
+
+    } else {
+      display =
       <div>
-        <div className="header">
-          <img src="logo.png" className="logo" />
-          <h1>Chess Blunders Explained</h1>
-        </div>
         <div className="form">
           <FormControl>
             <TextField id="my-input" aria-describedby="my-helper-text" variant="outlined" label="Username"
@@ -143,6 +162,16 @@ export default class GameManager extends React.Component<Props, States> {
         <div>
           { gameList }
         </div>
+      </div>;
+    }
+
+    return (
+      <div>
+      <div className="header">
+        <img src="logo.png" className="logo" />
+        <h1>Chess Blunders Explained</h1>
+      </div>
+      { display }
       </div>
     );
   }

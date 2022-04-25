@@ -3,26 +3,27 @@ import React from 'react';
 import './GameInfoStyle.css';
 
 interface Opening {
-  eco: string,
+  eco: string
   name: string
 }
 
 interface Clock {
-  initial: number,
+  initial: number
   increment: number
 }
 
 interface GameProps {
-  id: string,
-  createdAt: number,
-  user: string,
-  winner: string,
-  status: string,
-  white: string,
-  black: string,
-  pgn: string,
-  opening: Opening,
-  speed: string,
+  showGameAnalysis: (pgn: string) => void
+  id: string
+  createdAt: number
+  user: string
+  winner: string
+  status: string
+  white: string
+  black: string
+  pgn: string
+  opening: Opening
+  speed: string
   clock: Clock
 
 };
@@ -36,7 +37,7 @@ export default class GameInfoBox extends React.Component<GameProps, GameStates> 
   }
 
   render() {
-    const { id, createdAt, user, winner, status, white, black, pgn, opening, speed, clock }  = this.props;
+    const { showGameAnalysis, id, createdAt, user, winner, status, white, black, pgn, opening, speed, clock }  = this.props;
 
     let timeControlImg = <img className="time-control-img" src="bullet.png" />;
 
@@ -68,7 +69,7 @@ export default class GameInfoBox extends React.Component<GameProps, GameStates> 
     const date = new Date(createdAt).toLocaleDateString("en-US");
 
     return (
-      <div className="game-box">
+      <div className="game-box" onClick={() => showGameAnalysis(pgn)}>
         <div className="time-control-div">
           {timeControlImg}
           {timeControlText}

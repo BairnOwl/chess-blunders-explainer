@@ -7,6 +7,11 @@
   margin-bottom: 5px;
 }
 
+.game-box:hover {
+  background-color: #d8ecf3;
+  cursor: pointer;
+}
+
 .time-control-div {
   display: block;
   width: 50px;
