@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 from util import BlunderExplainer
 
 app = Flask(__name__)
+CORS(app)
 explainer = BlunderExplainer("stockfish.exe")
 
 @app.route("/analysis", methods=['GET'])
