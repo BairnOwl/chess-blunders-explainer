@@ -47,7 +47,7 @@ class BlunderExplainer:
         for i, move in enumerate(game.mainline_moves()):
             board.push(move)
 
-            score = self._stockfish.analyse(board, chess.engine.Limit(time=time_limit))["score"].white().score() / 100
+            score = self._stockfish.analyse(board, chess.engine.Limit(time=time_limit))["score"].white().score(mate_score=10000) / 100
             position = Position(board.fen(), i+1, score)
             if abs(score - positions[-1].score) >= mistake_threshold: 
                 mistakeSide = "white" if score - positions[-1].score < 0 else "black"
