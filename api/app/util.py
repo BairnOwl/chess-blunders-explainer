@@ -1,4 +1,5 @@
 import io
+import random
 from unicodedata import category
 import chess.engine
 import chess.pgn
@@ -62,5 +63,6 @@ class BlunderExplainer:
         return positions
 
     def _predict_mistake(self, fen):
-        return "pin"
-            
+        # TODO: overwrite this with real model call
+        mistakes = ["doubleCheck", "fork", "exposedKing", "hangingPiece", "mate", "pin"]
+        return random.choice(mistakes)
