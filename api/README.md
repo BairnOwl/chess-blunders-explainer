@@ -8,5 +8,5 @@ python -m venv venv
 source venv/bin/activate
 
 pip install -r requirements.txt
-python ./app/index.py
+python ./app/index.py stockfish
 ```
