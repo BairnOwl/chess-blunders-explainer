@@ -1,0 +1,4 @@
+stockfish
+flask
+chess
+flask-cors
