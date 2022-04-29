@@ -13,6 +13,22 @@
 
 .move-list {
   padding-left: 30px;
-  width: 150px;
+  width: 210px;
   float: left;
+  height: 60vh;
+  overflow: auto;
+}
+
+.move {
+  text-align: center;
+  float: left;
+  width: 100px;
+  height: 25px;
+  line-height: 25px;
+  border-left: 1px solid black;
+}
+
+.move:hover {
+  cursor: pointer;
+  background-color: #d8ecf3;
 }
