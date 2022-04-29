@@ -21,6 +21,7 @@
     "react-chessground": "^1.5.0",
     "react-dom": "^18.0.0",
     "react-scripts": "5.0.1",
+    "react-spinners-css": "^2.0.1",
     "typescript": "^4.6.3",
     "web-vitals": "^2.1.4"
   },

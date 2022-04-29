@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Chessboard } from 'react-chessboard';
 import Button from '@mui/material/Button';
+import { Ring } from 'react-spinners-css';
 
 import './GameAnalysisStyle.css';
 
@@ -11,6 +12,7 @@ interface GameProps {
 };
 
 interface GameStates {
+  isLoading: boolean,
   pgn: string
   moveList: any,
   analysisData: any,
@@ -25,6 +27,7 @@ export default class GameAnalysis extends React.Component<GameProps, GameStates>
     super(props);
 
     this.state = {
+      isLoading: true,
       pgn: '',
       moveList: [],
       analysisData: [],
@@ -35,6 +38,7 @@ export default class GameAnalysis extends React.Component<GameProps, GameStates>
     };
 
     this.setBoard = this.setBoard.bind(this);
+    this.keyDownHandler = this.keyDownHandler.bind(this);
   }
 
   componentDidMount() {
@@ -62,6 +66,7 @@ export default class GameAnalysis extends React.Component<GameProps, GameStates>
     })
     .then(data => {
       this.setState( {
+        isLoading: false,
         analysisData: data
       });
     })
@@ -73,6 +78,16 @@ export default class GameAnalysis extends React.Component<GameProps, GameStates>
       currMoveNum: i,
       shouldDisplayText: true
     });
+  }
+
+  keyDownHandler(e: React.KeyboardEvent<HTMLDivElement>) {
+    if (e.code === "ArrowLeft") {
+      this.setBoard(this.state.currMoveNum - 1);
+    }
+
+    if (e.code === "ArrowRight") {
+      this.setBoard(this.state.currMoveNum + 1);
+    }
   }
 
   render() {
@@ -137,16 +152,27 @@ export default class GameAnalysis extends React.Component<GameProps, GameStates>
       explanationText = '';
     }
 
-    return (
+    let toRender;
+
+    if (this.state.isLoading) {
+      toRender = <div className="loading-screen"><Ring color="#9dd0e1" /></div>;
+    } else {
+      toRender =
       <div className="analysis-div">
         <Button className="back-button" variant="outlined" sx={{margin: 2}} size="large" onClick={() => this.props.hideGameAnalysis()}>Back</Button>
         <div className="board"><Chessboard position={this.state.boardPosition} arePiecesDraggable={false}/></div>
-        <div className="move-list">
+        <div className="move-list" tabIndex={0} onKeyDown={this.keyDownHandler}>
           {moveList}
         </div>
         <div className="explanation-text">
           {explanationText}
         </div>
+      </div>
+    }
+
+    return (
+      <div>
+      {toRender}
       </div>
     );
   }

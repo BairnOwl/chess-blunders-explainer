@@ -1,3 +1,10 @@
+.loading-screen {
+  margin-top: 50px;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+}
+
 .analysis-div {
   margin-left: 10vw;
   margin-top: 10px;
