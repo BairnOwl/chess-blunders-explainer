@@ -41,6 +41,10 @@
   background-color: #d8ecf3;
 }
 
+.selected {
+  background-color: #9dd0e1;
+}
+
 .explanation-text {
 
 }

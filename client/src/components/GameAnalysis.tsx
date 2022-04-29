@@ -88,7 +88,7 @@ export default class GameAnalysis extends React.Component<GameProps, GameStates>
       return (
         <div>
         {numberBox}
-        <div className="move" onClick={() => this.setBoard(i+1)}>
+        <div className={`move ${this.state.currMoveNum == (i+1) ? 'selected' : ''}`} onClick={() => this.setBoard(i+1)}>
           {move}
         </div>
         </div>
