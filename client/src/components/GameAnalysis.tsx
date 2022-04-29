@@ -20,7 +20,7 @@ interface GameStates {
   shouldDisplayText : boolean
 };
 
-export default class GameInfoBox extends React.Component<GameProps, GameStates> {
+export default class GameAnalysis extends React.Component<GameProps, GameStates> {
   constructor(props) {
     super(props);
 
@@ -40,8 +40,6 @@ export default class GameInfoBox extends React.Component<GameProps, GameStates> 
   componentDidMount() {
     const pgn = this.props.pgn;
     const moves = pgn.substr(pgn.indexOf('1.')).split(' ');
-
-    console.log(moves);
 
     let moveList : string[] = [];
 
@@ -78,11 +76,24 @@ export default class GameInfoBox extends React.Component<GameProps, GameStates> 
   }
 
   render() {
-    const moveList = this.state.moveList.map((move, i) =>
-      <div className="move" onClick={() => this.setBoard(i+1)}>
-        {move}
-      </div>
-    );
+    const moveList = this.state.moveList.map((move, i) => {
+
+      let numberBox = <div></div>;
+
+      if ((i+1) % 2 == 1) {
+        // 1 => 1, 3 => 2, 5 => 3, 7 => 4, 9 => 5
+        const num = (i + 2) / 2;
+        numberBox = <div className="num-box">{num}.</div>
+      }
+      return (
+        <div>
+        {numberBox}
+        <div className="move" onClick={() => this.setBoard(i+1)}>
+          {move}
+        </div>
+        </div>
+      )
+    });
 
     let explanationText;
 
@@ -118,7 +129,7 @@ export default class GameInfoBox extends React.Component<GameProps, GameStates> 
       }
 
       explanationText = <div>
-      <h3>Explanation</h3>
+      <h2>Explanation</h2>
       <p>{evalPosText}</p>
       <p>{mistakeText}</p>
       </div>
@@ -133,7 +144,7 @@ export default class GameInfoBox extends React.Component<GameProps, GameStates> 
         <div className="move-list">
           {moveList}
         </div>
-        <div>
+        <div className="explanation-text">
           {explanationText}
         </div>
       </div>
