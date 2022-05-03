@@ -87,7 +87,7 @@ def move_was_mistake(prevboard, curboard,
     return False
 
 
-    
+
 def load_training_testing_pairs(puzzlesfilename, output_categories_filename, limit = 10000):
 
     all_games_data = []
@@ -130,6 +130,7 @@ def load_training_testing_pairs(puzzlesfilename, output_categories_filename, lim
         print(impending_tactic)
         
         if impending_tactic == "unknown": #(temp): skip unknown tactics for now. See if accuracy changes.
+            i = i - 1 #subtract 1 from the count of tallied pairs because we're skipping it.
             continue
         #store the input vectors and output labels in separate but corresponding arrays
         X.append(boardfen_to_vector(board_state))
